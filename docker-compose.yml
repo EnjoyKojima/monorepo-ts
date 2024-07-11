@@ -1,0 +1,37 @@
+services:
+  proxy:
+    image: steveltn/https-portal:1
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      STAGE: local
+      DOMAINS: |
+        monorepo.localhost -> http://frontend:3000,
+        api.monorepo.localhost -> http://backend:3000
+      ERROR_LOG: /var/log/nginx/error.log
+      ACCESS_LOG: /var/log/nginx/access.log
+      WEBSOCKET: "true"
+    volumes: 
+      - ./proxy/log:/var/log/nginx/
+      - ./proxy/conf:/etc/nginx/conf.d
+      - ./proxy/nginx-conf/monorepo.localhost.ssl.conf.erb:/var/lib/nginx-conf/monorepo.localhost.ssl.conf.erb:ro
+      - ./proxy/nginx-conf/api.monorepo.localhost.ssl.conf.erb:/var/lib/nginx-conf/api.monorepo.localhost.ssl.conf.erb:ro
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/var/www/html
+    tty: true
+    stdin_open: true
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/var/www/html
+    tty: true
+    stdin_open: true
