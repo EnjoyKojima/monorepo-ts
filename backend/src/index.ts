@@ -37,8 +37,12 @@ const app = new Elysia()
 
 app.get("/", () => "Hello Elysia")
 app.post('user', async ({ body }) => {
+  const hashedPassword = await Bun.password.hash(body.password)
   const newUser = await db.user.create({
-    data: body
+    data: {
+      username: body.username,
+      password: hashedPassword
+    }
   })
   return {
     id: newUser.id,
