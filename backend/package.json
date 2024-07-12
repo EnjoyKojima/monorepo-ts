@@ -9,10 +9,12 @@
     "@elysiajs/bearer": "^1.0.2",
     "@elysiajs/cron": "^1.0.3",
     "@elysiajs/jwt": "^1.0.2",
+    "@prisma/client": "5.16.2",
     "elysia": "latest"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "prisma": "^5.16.2"
   },
   "module": "src/index.js"
 }

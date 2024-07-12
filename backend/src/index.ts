@@ -1,7 +1,9 @@
 import { Elysia, t, CookieOptions } from "elysia";
 import { cron } from '@elysiajs/cron'
 import { jwt } from '@elysiajs/jwt'
+import { PrismaClient } from '@prisma/client'
 
+const db = new PrismaClient()
 
 const app = new Elysia()
   .use(jwt({
@@ -34,6 +36,20 @@ const app = new Elysia()
   }))
 
 app.get("/", () => "Hello Elysia")
+app.post('user', async ({ body }) => {
+  const newUser = await db.user.create({
+    data: body
+  })
+  return {
+    id: newUser.id,
+    username: newUser.username
+  }
+}, {
+  body: t.Object({
+    username: t.String(),
+    password: t.String()
+  })
+})
 app.post("/auth", async ({ jwtAccess, jwtRefresh, cookie: { accessToken, refreshToken }, body, error }) => {
   if (body.username !== 'kojima' || body.password !== 'super-secure') {
     error(401, 'Unauthorized')
