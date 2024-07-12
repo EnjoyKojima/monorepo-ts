@@ -65,6 +65,21 @@ app.post("/auth", async ({ jwtAccess, jwtRefresh, cookie: { accessToken, refresh
     password: t.String()
   })
 })
+app.get('/products', async ({ }) => {
+  return [
+    { id: 1, name: 'Product 1' },
+    { id: 2, name: 'Product 2' },
+    { id: 3, name: 'Product 3' },
+  ]
+}, {
+  async beforeHandle({ jwtAccess, set, cookie: { accessToken } }) {
+    const auth = await jwtAccess.verify(accessToken.value)
+    console.log({ auth })
+    if (!auth) {
+      return (set.status = 'Unauthorized')
+    }
+  }
+})
 
 app.listen(3000);
 
