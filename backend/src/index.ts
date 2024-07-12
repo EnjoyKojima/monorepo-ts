@@ -34,8 +34,9 @@ const app = new Elysia()
   }))
 
 app.get("/", () => "Hello Elysia")
-app.post("/auth", async ({ jwtAccess, jwtRefresh, cookie: { accessToken, refreshToken }, body }) => {
+app.post("/auth", async ({ jwtAccess, jwtRefresh, cookie: { accessToken, refreshToken }, body, error }) => {
   if (body.username !== 'kojima' || body.password !== 'super-secure') {
+    error(401, 'Unauthorized')
     return 'Unauthorized'
   }
   accessToken.set({
