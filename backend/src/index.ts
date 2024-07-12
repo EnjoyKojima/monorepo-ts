@@ -54,10 +54,15 @@ app.post('user', async ({ body }) => {
     password: t.String()
   })
 })
-app.post("/auth", async ({ jwtAccess, jwtRefresh, cookie: { accessToken, refreshToken }, body, error }) => {
-  if (body.username !== 'kojima' || body.password !== 'super-secure') {
-    error(401, 'Unauthorized')
-    return 'Unauthorized'
+app.post("/auth", async ({ jwtAccess, jwtRefresh, cookie: { accessToken, refreshToken }, body, set }) => {
+  const user = await db.user.findUnique({
+    where: {
+      username: body.username
+    }
+  })
+  const isMatch = await Bun.password.verify(body.password, user?.password || '')
+  if (!isMatch) {
+    return (set.status = 'Unauthorized')
   }
   const commonAttrs: CookieOptions = {
     httpOnly: true,
