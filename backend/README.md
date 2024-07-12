@@ -13,3 +13,10 @@ bun run dev
 ```
 
 Open http://localhost:3000/ with your browser to see the result.
+
+## Secret Generation
+OpenSSLでシークレットを生成するには、以下のコマンドを使用します。
+
+```bash
+openssl rand -base64 32
+```
