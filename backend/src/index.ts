@@ -1,4 +1,4 @@
-import { Elysia, t } from "elysia";
+import { Elysia, t, CookieOptions } from "elysia";
 import { cron } from '@elysiajs/cron'
 import { jwt } from '@elysiajs/jwt'
 
@@ -39,7 +39,7 @@ app.post("/auth", async ({ jwtAccess, jwtRefresh, cookie: { accessToken, refresh
     error(401, 'Unauthorized')
     return 'Unauthorized'
   }
-  const commonAttrs = {
+  const commonAttrs: CookieOptions = {
     httpOnly: true,
     domain: 'monorepo.localhost',
     secure: true,
