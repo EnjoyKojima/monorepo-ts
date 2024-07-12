@@ -39,24 +39,24 @@ app.post("/auth", async ({ jwtAccess, jwtRefresh, cookie: { accessToken, refresh
     error(401, 'Unauthorized')
     return 'Unauthorized'
   }
+  const commonAttrs = {
+    httpOnly: true,
+    domain: 'monorepo.localhost',
+    secure: true,
+    sameSite: 'strict'
+  } as const
   accessToken.set({
     value: await jwtAccess.sign({
       username: body.username,
       role: 'admin'
     }),
-    httpOnly: true,
-    domain: 'monorepo.localhost',
-    secure: true,
-    sameSite: 'strict',
+    ...commonAttrs
   })
   refreshToken.set({
     value: await jwtRefresh.sign({
       username: body.username
     }),
-    httpOnly: true,
-    domain: 'monorepo.localhost',
-    secure: true,
-    sameSite: 'strict',
+    ...commonAttrs
   })
   return 'Authorized'
 }, {
